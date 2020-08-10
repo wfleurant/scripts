@@ -494,8 +494,17 @@ Select the D option from the main main in order to do so."
     #set vars to indicate new firmware type
     isStock=false
     isFullRom=true
+    # Add NVRAM reset note for 4.12 release
+    if [[ "$isUEFI" = true && "$useUEFI" = true ]]; then
+        echo_yellow "IMPORTANT:\n
+This update uses a new format to store UEFI NVRAM data, and
+will reset your BootOrder and boot entries. You may need to 
+manually Boot From File and reinstall your bootloader if 
+booting from the internal storage device fails."
+    fi
     if [[ "$useUEFI" = "true" ]]; then
         firmwareType="Full ROM / UEFI (pending reboot)"
+        isUEFI=true
     else
         firmwareType="Full ROM / Legacy (pending reboot)"
     fi
@@ -1227,9 +1236,10 @@ function show_header() {
         curr_mm=`echo $fwDate | cut -f 1 -d '/'`
         curr_dd=`echo $fwDate | cut -f 2 -d '/'`
         eval coreboot_file=$`echo "coreboot_uefi_${device}"`
-        uefi_yy=`echo "$coreboot_file" | cut -f 3 -d '_' | cut -c1-4`
-        uefi_mm=`echo "$coreboot_file" | cut -f 3 -d '_' | cut -c5-6`
-        uefi_dd=`echo "$coreboot_file" | cut -f 3 -d '_' | cut -c7-8`
+        date=`echo $coreboot_file | grep -o "mrchromebox.*" | cut -f 2 -d '_' | cut -f 1 -d '.'`
+        uefi_yy=`echo $date | cut -c1-4`
+        uefi_mm=`echo $date | cut -c5-6`
+        uefi_dd=`echo $date | cut -c7-8`
         if [[ ("$firmwareType" != *"pending"*) && (($uefi_yy > $curr_yy) || \
             ($uefi_yy == $curr_yy && $uefi_mm > $curr_mm) || \
             ($uefi_yy == $curr_yy && $uefi_mm == $curr_mm && $uefi_dd > $curr_dd)) ]]; then
@@ -1402,6 +1412,9 @@ function uefi_menu() {
     else
         echo -e "${GRAY_TEXT}**     ${GRAY_TEXT} 2)${GRAY_TEXT} Restore Stock ChromeOS Firmware ${NORMAL}"
     fi
+    if [[ "${device^^}" = "EVE" ]]; then
+        echo -e "${MENU}**${WP_TEXT} [WP]${NUMBER} D)${MENU} Downgrade Touchpad Firmware ${NORMAL}"
+    fi
     if [[ "$unlockMenu" = true || "$isUEFI" = true ]]; then
         echo -e "${MENU}**${WP_TEXT}     ${NUMBER} C)${MENU} Clear UEFI NVRAM ${NORMAL}"
     fi
@@ -1425,6 +1438,12 @@ function uefi_menu() {
             else
               uefi_menu
             fi
+            ;;
+
+        [dD])  if [[  "${device^^}" = "EVE" ]]; then
+                downgrade_touchpad_fw
+            fi
+            uefi_menu
             ;;
 
         [rR])  echo -e "\nRebooting...\n";

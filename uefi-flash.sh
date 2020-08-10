@@ -12,7 +12,7 @@
 #
 
 #where the stuff is
-script_url="https://raw.githubusercontent.com/MrChromebox/scripts/master/"
+script_url="https://raw.githubusercontent.com/wfleurant/scripts/master/"
 
 #ensure output of system tools in en-us for parsing
 export LC_ALL=C
@@ -28,9 +28,9 @@ fi
 
 #get support scripts
 echo -e "\nDownloading supporting files..."
-rm -rf firmware.sh >/dev/null &2>1
-rm -rf functions.sh >/dev/null &2>1
-rm -rf sources.sh >/dev/null &2>1
+rm -rf firmware.sh >/dev/null 2>&1
+rm -rf functions.sh >/dev/null 2>&1
+rm -rf sources.sh >/dev/null 2>&1
 curl -sLO ${script_url}firmware.sh
 rc0=$?
 curl -sLO ${script_url}functions.sh

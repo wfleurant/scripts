@@ -11,7 +11,7 @@
 #
 
 #where the stuff is
-script_url="https://raw.githubusercontent.com/MrChromebox/scripts/master/"
+script_url="https://raw.githubusercontent.com/wfleurant/scripts/master/"
 
 #set working dir
 if cat /etc/lsb-release | grep "Chrom" > /dev/null 2>&1; then
@@ -24,10 +24,10 @@ fi
 
 #get support scripts
 echo -e "\nDownloading supporting files..."
-rm -rf firmware.sh >/dev/null &2>1
-rm -rf functions.sh >/dev/null &2>1
-rm -rf sources.sh >/dev/null &2>1
-rm -rf kodi.sh >/dev/null &2>1
+rm -rf firmware.sh >/dev/null 2>&1
+rm -rf functions.sh >/dev/null 2>&1
+rm -rf sources.sh >/dev/null 2>&1
+rm -rf kodi.sh >/dev/null 2>&1
 curl -sLO ${script_url}firmware.sh
 rc0=$?
 curl -sLO ${script_url}functions.sh
